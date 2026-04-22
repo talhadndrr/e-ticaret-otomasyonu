@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aydın Market - Giriş Yap</title>
+<style>
+  :root {
+    --brand-cyan: #00e5ff;
+    --brand-orange: #ff8c00;
+    --bg-gray: #121212; 
+    --card-bg: #1e1e1e; 
+    --text-dark: #e0e0e0; 
+    --text-muted: #9e9e9e;
+    --border: #333333;
+    --shadow-sm: 0 8px 24px rgba(0,0,0,0.5);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Inter", system-ui, -apple-system, sans-serif; background: var(--bg-gray); color: var(--text-dark); -webkit-font-smoothing: antialiased; }
+
+  .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+  .logo { display: flex; align-items: center; cursor: pointer; font-size: 32px; font-weight: 900; font-style: italic; letter-spacing: -1px; transition: 0.2s; }
+  .logo:hover { transform: scale(1.05); }
+  .logo .cyan { color: var(--brand-cyan); }
+  .logo .orange { color: var(--brand-orange); }
+
+  .nav-links { display: flex; gap: 30px; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+  .nav-links a:hover { color: var(--brand-orange); }
+
+  .wrap { display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 20px; }
+  
+  .auth-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 400px; padding: 30px; box-shadow: var(--shadow-sm); }
+  .tabs { display: flex; margin-bottom: 25px; border-bottom: 1px solid var(--border); }
+  .tabs button { flex: 1; background: none; border: none; color: var(--text-muted); font-size: 16px; font-weight: 600; padding: 12px 0; cursor: pointer; transition: 0.2s; border-bottom: 2px solid transparent; }
+  .tabs button.active { color: var(--brand-orange); border-bottom: 2px solid var(--brand-orange); }
+  .tabs button:hover:not(.active) { color: var(--text-dark); }
+
+  .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  .form-group input { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-gray); color: var(--text-dark); outline: none; font-size: 14px; transition: 0.2s; }
+  .form-group input:focus { border-color: var(--brand-cyan); }
+
+  .submit-btn { width: 100%; padding: 14px; background: var(--brand-orange); color: #fff; font-size: 16px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+  .submit-btn:hover { background: #e66e00; transform: translateY(-2px); }
+
+  .extra-links { display: flex; justify-content: space-between; margin-top: 15px; font-size: 13px; }
+  .extra-links a { color: var(--brand-cyan); text-decoration: none; transition: 0.2s; }
+  .extra-links a:hover { text-decoration: underline; }
+
+  /* Bilgi Mesajı Kutusu */
+  #messageBox { display: none; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; font-weight: bold; text-align: center; }
+  .success { background: rgba(0, 255, 0, 0.1); color: #4caf50; border: 1px solid #4caf50; }
+  .error { background: rgba(255, 0, 0, 0.1); color: #ff5252; border: 1px solid #ff5252; }
+
+  footer { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px; border-top: 1px solid var(--border); background: var(--card-bg); }
+</style>
+</head>
+<body>
+
+<header class="header-top">
+  <div class="logo" onclick="window.location.href='/'">
+    <span class="cyan">Aydın</span><span class="orange">Market</span>
+  </div>
+  <nav class="nav-links">
+    <a href="/products.html">Kategoriler</a>
+    <a href="/magazalar">Mağazalar</a>
+    <a href="/iletisim">İletişim</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="auth-card">
+    
+    <div id="messageBox"></div>
+
+    <div class="tabs">
+      <button id="tab-login" class="active" onclick="switchTab('login')">Giriş Yap</button>
+      <button id="tab-register" onclick="switchTab('register')">Kayıt Ol</button>
+    </div>
+
+    <form id="form-login" onsubmit="gercekGiris(event)">
+      <div class="form-group">
+        <label>E-Posta Adresi</label>
+        <input type="email" id="loginEmail" placeholder="ornek@posta.com" required>
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="loginSifre" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="submit-btn">Giriş Yap</button>
+      <div class="extra-links"><a href="#">Şifremi Unuttum</a></div>
+    </form>
+
+    <form id="form-register" style="display: none;" onsubmit="gercekKayit(event)">
+      <div class="form-group">
+        <label>Ad Soyad</label>
+        <input type="text" id="regAd" placeholder="Adınız ve Soyadınız" required>
+      </div>
+      <div class="form-group">
+        <label>E-Posta Adresi</label>
+        <input type="email" id="regEmail" placeholder="ornek@posta.com" required>
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="regSifre" placeholder="En az 6 karakter" required>
+      </div>
+      <button type="submit" class="submit-btn">Üye Ol</button>
+    </form>
+
+  </div>
+</div>
+
+<footer>&copy; 2026 © 2026 Tüm hakları saklıdır.  Hüseyin Talha Dündar. Gökçe Aleyna Yıldız. Yasin Efe Gerek. Firdevs Nergiz Boz. Emre Meriç. Batur Kayı Pınarbaşı. Elif Sultan Özel. İbrahim Mert Kaya. Hatice Nisa Kızılbağlı. Enes Aytürk. .</footer>
+
+<script>
+function switchTab(tab) {
+  document.getElementById('messageBox').style.display = 'none'; // Sekme değişince mesajı temizle
+  if (tab === 'login') {
+    document.getElementById('form-login').style.display = 'block';
+    document.getElementById('form-register').style.display = 'none';
+    document.getElementById('tab-login').classList.add('active');
+    document.getElementById('tab-register').classList.remove('active');
+  } else {
+    document.getElementById('form-login').style.display = 'none';
+    document.getElementById('form-register').style.display = 'block';
+    document.getElementById('tab-register').classList.add('active');
+    document.getElementById('tab-login').classList.remove('active');
+  }
+}
+
+function mesajGoster(mesaj, tip) {
+    const box = document.getElementById('messageBox');
+    box.textContent = mesaj;
+    box.className = tip; // 'success' veya 'error'
+    box.style.display = 'block';
+}
+
+// ARKA PLANA (VERİTABANINA) KAYIT GÖNDERME
+async function gercekKayit(e) {
+    e.preventDefault();
+    const ad = document.getElementById('regAd').value;
+    const email = document.getElementById('regEmail').value;
+    const sifre = document.getElementById('regSifre').value;
+
+    const cevap = await fetch('/kayit-ol', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ad_soyad: ad, email: email, sifre: sifre })
+    });
+
+    const sonuc = await cevap.json();
+    if(cevap.ok) {
+        mesajGoster(sonuc.mesaj, 'success');
+        document.getElementById('form-register').reset(); // Formu temizle
+        setTimeout(() => switchTab('login'), 2000); // 2 saniye sonra giriş sayfasına at
+    } else {
+        mesajGoster(sonuc.hata, 'error');
+    }
+}
+
+// ARKA PLANDA (VERİTABANINDA) GİRİŞ KONTROLÜ
+async function gercekGiris(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const sifre = document.getElementById('loginSifre').value;
+
+    const cevap = await fetch('/giris-yap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, sifre: sifre })
+    });
+
+    const sonuc = await cevap.json();
+    if(cevap.ok) {
+        mesajGoster(sonuc.mesaj, 'success');
+        // KULLANICIYI HAFIZAYA KAYDET
+        localStorage.setItem('kullanici_ad', sonuc.ad_soyad);
+        localStorage.setItem('kullanici_id', sonuc.id);
+        // Profil sayfasına yönlendir
+        setTimeout(() => { window.location.href = '/profil'; }, 1000); 
+    } else {
+        mesajGoster(sonuc.hata, 'error');
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aydın Market - Hesabım</title>
+<style>
+  :root { --brand-cyan: #00e5ff; --brand-orange: #ff8c00; --bg-gray: #121212; --card-bg: #1e1e1e; --text-dark: #e0e0e0; --text-muted: #9e9e9e; --border: #333333; --radius: 12px; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Inter", sans-serif; background: var(--bg-gray); color: var(--text-dark); }
+  
+  .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+  .logo { font-size: 32px; font-weight: 900; font-style: italic; letter-spacing: -1px; cursor: pointer; }
+  .logo .cyan { color: var(--brand-cyan); } .logo .orange { color: var(--brand-orange); }
+
+  .wrap { display: flex; gap: 30px; padding: 40px; max-width: 1200px; margin: 0 auto; min-height: 75vh;}
+  
+  /* Sol Profil Kartı */
+  .profile-sidebar { width: 300px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; text-align: center; height: fit-content; }
+  .avatar { width: 80px; height: 80px; background: var(--brand-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 15px auto; color: #fff;}
+  .profile-name { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+  .logout-btn { background: transparent; border: 1px solid #ff3333; color: #ff3333; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 20px; width: 100%; font-weight: bold; transition: 0.2s;}
+  .logout-btn:hover { background: #ff3333; color: #fff; }
+
+  /* Sağ Siparişler Listesi */
+  .content { flex: 1; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; }
+  .content h2 { margin-top: 0; color: var(--brand-cyan); border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+  
+  .order-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
+  .order-item:last-child { border-bottom: none; }
+  .order-info { display: flex; flex-direction: column; gap: 5px; }
+  .order-name { font-size: 16px; font-weight: bold; color: #fff; }
+  .order-date { font-size: 13px; color: var(--text-muted); }
+  .order-price { font-size: 18px; font-weight: 800; color: var(--brand-orange); }
+
+</style>
+</head>
+<body>
+
+<header class="header-top">
+  <div class="logo" onclick="window.location.href='/'">
+    <span class="cyan">Aydın</span><span class="orange">Market</span>
+  </div>
+  <a href="/products.html" style="color:var(--brand-cyan); text-decoration:none; font-weight:bold;">Alışverişe Dön 🛒</a>
+</header>
+
+<div class="wrap">
+  <div class="profile-sidebar">
+    <div class="avatar">👤</div>
+    <div class="profile-name" id="userName">Yükleniyor...</div>
+    <p style="color:var(--text-muted); font-size:14px;">Aydın Market Müşterisi</p>
+    <button class="logout-btn" onclick="cikisYap()">Çıkış Yap</button>
+  </div>
+
+  <div class="content">
+    <h2>📦 Geçmiş Siparişlerim</h2>
+    <div id="ordersList">
+      <div style="color:var(--brand-orange)">Siparişleriniz kontrol ediliyor...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.onload = async () => {
+    // Tarayıcıya kaydedilmiş kullanıcıyı al
+    const m_id = localStorage.getItem('kullanici_id');
+    const m_ad = localStorage.getItem('kullanici_ad');
+
+    if(!m_id) {
+        alert("Lütfen önce giriş yapın!");
+        window.location.href = '/login';
+        return;
+    }
+
+    document.getElementById('userName').innerText = m_ad;
+
+    // Veritabanından siparişleri çek
+    const cevap = await fetch('/siparislerim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ musteri_id: m_id })
+    });
+    
+    const siparisler = await cevap.json();
+    const list = document.getElementById('ordersList');
+    list.innerHTML = "";
+
+    if(siparisler.length === 0) {
+        list.innerHTML = "<p style='color:#999;'>Henüz hiç sipariş vermemişsiniz.</p>";
+    } else {
+        siparisler.forEach(s => {
+            list.innerHTML += `
+            <div class="order-item">
+              <div class="order-info">
+                <span class="order-name">${s.urun_adi} (x${s.adet})</span>
+                <span class="order-date">Sipariş Tarihi: ${s.tarih}</span>
+              </div>
+              <div class="order-price">${s.toplam.toLocaleString('tr-TR',{minimumFractionDigits:2})} ₺</div>
+            </div>`;
+        });
+    }
+};
+
+function cikisYap() {
+    localStorage.removeItem('kullanici_id');
+    localStorage.removeItem('kullanici_ad');
+    window.location.href = '/';
+}
+</script>
+</body>
+</html>

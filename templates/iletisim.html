@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aydın Market - İletişim</title>
+<style>
+  :root { --brand-cyan: #00e5ff; --brand-orange: #ff8c00; --bg-gray: #121212; --card-bg: #1e1e1e; --text-dark: #e0e0e0; --text-muted: #9e9e9e; --border: #333333; --radius: 12px; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Inter", sans-serif; background: var(--bg-gray); color: var(--text-dark); }
+  
+  .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+  .logo { font-size: 32px; font-weight: 900; font-style: italic; letter-spacing: -1px; cursor: pointer; }
+  .logo .cyan { color: var(--brand-cyan); } .logo .orange { color: var(--brand-orange); }
+
+  .nav-links { display: flex; gap: 30px; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 15px; transition: 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--brand-orange); }
+
+  .wrap { display: flex; justify-content: center; align-items: center; padding: 40px; max-width: 1000px; margin: 0 auto; min-height: 75vh;}
+  
+  .contact-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; display: flex; gap: 40px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  
+  .info-section { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  .info-section h2 { margin-top: 0; color: var(--brand-cyan); font-size: 28px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+  .info-item { display: flex; align-items: flex-start; gap: 15px; }
+  .icon { font-size: 24px; }
+  .details h4 { margin: 0 0 5px 0; color: var(--brand-orange); font-size: 16px; }
+  .details p { margin: 0; color: var(--text-muted); line-height: 1.5; font-size: 14px; }
+
+  .form-section { flex: 1; display: flex; flex-direction: column; gap: 15px; background: var(--bg-gray); padding: 25px; border-radius: 8px; border: 1px solid var(--border); }
+  .form-section h3 { margin-top: 0; color: #fff; }
+  
+  /* Bildirim mesajı kutusu */
+  #mesajKutusu { display: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; text-align: center; }
+  .basarili { background: rgba(0, 255, 0, 0.1); color: #4caf50; border: 1px solid #4caf50; }
+  .hatali { background: rgba(255, 0, 0, 0.1); color: #ff5252; border: 1px solid #ff5252; }
+
+  input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: #fff; outline: none; transition: 0.2s;}
+  input:focus, textarea:focus { border-color: var(--brand-cyan); }
+  button { background: var(--brand-orange); color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+  button:hover { background: #e66e00; transform: translateY(-2px); }
+
+  @media(max-width: 768px) { .contact-card { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<header class="header-top">
+  <div class="logo" onclick="window.location.href='/'">
+    <span class="cyan">Aydın</span><span class="orange">Market</span>
+  </div>
+  <nav class="nav-links">
+    <a href="/products.html">Kategoriler</a>
+    <a href="/magazalar">Mağazalar</a>
+    <a href="/iletisim" class="active">İletişim</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="contact-card">
+    
+    <div class="info-section">
+      <h2>Bizimle İletişime Geçin</h2>
+      <div class="info-item">
+        <div class="icon">📍</div>
+        <div class="details">
+          <h4>Merkez Ofis (İstanbul Aydın Üniversitesi)</h4>
+          <p>Beşyol Mah. İnönü Cad. No:38<br>34295 Sefaköy - Küçükçekmece / İSTANBUL</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="icon">📞</div>
+        <div class="details">
+          <h4>Telefon / Çağrı Merkezi</h4>
+          <p>444 1 428</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="icon">📧</div>
+        <div class="details">
+          <h4>E-Posta Adresi</h4>
+          <p>iletisim@aydin.edu.tr<br>destek@aydinmarket.com</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Mesaj Gönder</h3>
+      <div id="mesajKutusu"></div> <input type="text" id="gonderenAd" placeholder="Adınız Soyadınız" required>
+      <input type="email" id="gonderenEmail" placeholder="E-Posta Adresiniz" required>
+      <textarea id="gonderenMesaj" rows="4" placeholder="Mesajınızı buraya yazın..." required></textarea>
+      
+      <button onclick="gercekMesajGonder()">Gönder</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+async function gercekMesajGonder() {
+    // Kutuların içindeki yazıları alıyoruz
+    const ad = document.getElementById('gonderenAd').value;
+    const email = document.getElementById('gonderenEmail').value;
+    const mesaj = document.getElementById('gonderenMesaj').value;
+    const kutu = document.getElementById('mesajKutusu');
+
+    // Boş alan kontrolü
+    if(ad.trim() === "" || email.trim() === "" || mesaj.trim() === "") {
+        kutu.textContent = "Lütfen tüm alanları doldurunuz!";
+        kutu.className = "hatali";
+        kutu.style.display = "block";
+        return;
+    }
+
+    try {
+        // Python'a verileri fırlatıyoruz
+        const cevap = await fetch('/mesaj-gonder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ad_soyad: ad, email: email, mesaj: mesaj })
+        });
+
+        const sonuc = await cevap.json();
+
+        if(cevap.ok) {
+            // Başarılıysa formu temizle ve yeşil mesaj ver
+            kutu.textContent = sonuc.mesaj;
+            kutu.className = "basarili";
+            kutu.style.display = "block";
+            
+            document.getElementById('gonderenAd').value = "";
+            document.getElementById('gonderenEmail').value = "";
+            document.getElementById('gonderenMesaj').value = "";
+            
+            // 3 saniye sonra yeşil mesajı da gizle
+            setTimeout(() => { kutu.style.display = "none"; }, 3000);
+        } else {
+            kutu.textContent = sonuc.hata;
+            kutu.className = "hatali";
+            kutu.style.display = "block";
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Menüye Giriş Yapanın Adını Ekleme (Daha önceki adımdan kalma ince detay)
+document.addEventListener("DOMContentLoaded", () => {
+    const ad = localStorage.getItem('kullanici_ad');
+    if(ad) {
+        const nav = document.querySelector('.nav-links');
+        const profilLink = document.createElement('a');
+        profilLink.href = '/profil';
+        profilLink.innerHTML = `👤 ${ad.split(' ')[0]}`;
+        profilLink.style.color = 'var(--brand-cyan)';
+        profilLink.style.fontWeight = 'bold';
+        nav.appendChild(profilLink);
+    } else {
+        const nav = document.querySelector('.nav-links');
+        const loginLink = document.createElement('a');
+        loginLink.href = '/login';
+        loginLink.innerHTML = `Giriş Yap`;
+        loginLink.style.color = 'var(--brand-cyan)';
+        loginLink.style.fontWeight = 'bold';
+        nav.appendChild(loginLink);
+    }
+});
+</script>
+
+</body>
+</html>

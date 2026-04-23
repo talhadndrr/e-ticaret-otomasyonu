@@ -1,14 +1,15 @@
 from flask import Flask, jsonify, request, render_template
 import psycopg2
 from datetime import date
+import os
 
 app = Flask(__name__)
 
-# Veritabanı bağlantı bilgileri (ŞİFRENİ KONTROL ETMEYİ UNUTMA)
+
 DB_HOST = "localhost"
 DB_NAME = "market_db"
 DB_USER = "postgres"
-DB_PASS = "4sifreadmin"   # Buraya PostgreSQL kurulumunda verdiğin şifreyi yaz
+DB_PASS = "4sifreadmin"   
 
 def get_db_connection():
     conn = psycopg2.connect(
@@ -19,7 +20,7 @@ def get_db_connection():
     )
     return conn
 
-# 1. Vitrin Sayfası (Ana Sayfa)
+# Vitrin Sayfası (Ana Sayfa)
 @app.route('/')
 def ana_sayfa():
     return render_template('index.html')
@@ -42,7 +43,7 @@ def iletisim_sayfasi():
 def login_sayfasi():
     return render_template('login.html')
 
-# Kontrol Merkezi (Admin Paneli)
+# (Admin Paneli)
 @app.route('/admin')
 @app.route('/admin.html')
 def admin_paneli():
@@ -58,17 +59,30 @@ def urunler_sayfasi():
 @app.route('/urunler', methods=['GET'])
 def urunleri_getir():
     try:
-        conn = get_db_connection()
+       
+        db_url = os.environ.get("DATABASE_URL")
+        if db_url:
+            if db_url.startswith("postgres://"):
+                db_url = db_url.replace("postgres://", "postgresql://", 1)
+            conn = psycopg2.connect(db_url)
+        else:
+           
+            conn = psycopg2.connect(
+                host="localhost",
+                database="aydin_market_db",
+                user="postgres",
+                password="4sifreadmin"
+            )
+        
         cur = conn.cursor()
         
-        # SQL sorgusuna resim_url sütununu da dahil ediyoruz
-        cur.execute("SELECT urun_id, urun_adi, stok, fiyat, kategori_id, resim_url FROM urun")
+       
+        cur.execute("SELECT urun_id, urun_adi, stok, fiyat, kategori_id FROM urun")
         db_urunler = cur.fetchall()
         
         cur.close()
         conn.close()
 
-        # Veritabanından gelen veriyi JSON formatına (Sözlük yapısına) çeviriyoruz
         urun_listesi = []
         for row in db_urunler:
             urun_listesi.append({
@@ -77,13 +91,14 @@ def urunleri_getir():
                 "stok": row[2],
                 "fiyat": float(row[3]),
                 "kategori_id": row[4],
-                "resim_url": row[5]  # Veritabanından gelen fotoğraf yolu
+                "resim_url": "/static/images/varsayilan.png" 
             })
 
         return jsonify(urun_listesi), 200
         
     except Exception as e:
-        return jsonify({"hata": f"Ürünler çekilirken hata oluştu: {str(e)}"}), 500
+        
+        return jsonify([{"urun_id": 999, "urun_adi": f"HATA: {str(e)}", "stok": 0, "fiyat": 0, "kategori_id": 1, "resim_url": "/static/images/varsayilan.png"}]), 200
 
 #  Satış Yapma ve Stok Düşme API'ı
 @app.route('/satis-yap', methods=['POST'])

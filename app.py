@@ -59,25 +59,18 @@ def urunler_sayfasi():
 @app.route('/urunler', methods=['GET'])
 def urunleri_getir():
     try:
-       
         db_url = os.environ.get("DATABASE_URL")
         if db_url:
             if db_url.startswith("postgres://"):
                 db_url = db_url.replace("postgres://", "postgresql://", 1)
             conn = psycopg2.connect(db_url)
         else:
-           
-            conn = psycopg2.connect(
-                host="localhost",
-                database="aydin_market_db",
-                user="postgres",
-                password="4sifreadmin"
-            )
+            conn = psycopg2.connect(host="localhost", database="aydin_market_db", user="postgres", password="4sifreadmin")
         
         cur = conn.cursor()
         
-       
-        cur.execute("SELECT urun_id, urun_adi, stok, fiyat, kategori_id FROM urun")
+        # DİKKAT: Artık resim_url sütununu da veritabanından çekiyoruz!
+        cur.execute("SELECT urun_id, urun_adi, stok, fiyat, kategori_id, resim_url FROM urun")
         db_urunler = cur.fetchall()
         
         cur.close()
@@ -91,15 +84,15 @@ def urunleri_getir():
                 "stok": row[2],
                 "fiyat": float(row[3]),
                 "kategori_id": row[4],
-                "resim_url": "/static/images/varsayilan.png" 
+                # 5. sıradaki veri (row[5]) artık senin veritabanına gireceğin fotoğraf yolları olacak
+                "resim_url": row[5] if row[5] else "/static/images/varsayilan.png" 
             })
 
         return jsonify(urun_listesi), 200
         
     except Exception as e:
-        
         return jsonify([{"urun_id": 999, "urun_adi": f"HATA: {str(e)}", "stok": 0, "fiyat": 0, "kategori_id": 1, "resim_url": "/static/images/varsayilan.png"}]), 200
-
+        
 #  Satış Yapma ve Stok Düşme API'ı
 @app.route('/satis-yap', methods=['POST'])
 def satis_yap():

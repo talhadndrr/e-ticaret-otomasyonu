@@ -1,7 +1,7 @@
 # 🛒 Aydın Market E-Ticaret Otomasyonu
 
 Bu proje, modern teknoloji kullanılarak geliştirilmiş, tam kapsamlı bir e-ticaret ve market yönetim sistemidir. Kullanıcı dostu arayüzü ve güçlü veritabanı altyapısıyla hem müşteriler hem de yöneticiler için kusursuz bir deneyim sunar.
-
+Web sitemize ulaşmak için : https://e-ticaret-otomasyonu-je8q.onrender.com/
 [Aydın Market Ana Sayfa Ekran Görüntüsü](https://prnt.sc/YRbtU7cGxDMu)
 
 ## ✨ Öne Çıkan Özelliklerimiz:

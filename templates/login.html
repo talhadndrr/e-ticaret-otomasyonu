@@ -49,7 +49,7 @@
   .extra-links a { color: var(--brand-cyan); text-decoration: none; transition: 0.2s; }
   .extra-links a:hover { text-decoration: underline; }
 
-  /* Bilgi Mesajı Kutusu */
+
   #messageBox { display: none; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; font-weight: bold; text-align: center; }
   .success { background: rgba(0, 255, 0, 0.1); color: #4caf50; border: 1px solid #4caf50; }
   .error { background: rgba(255, 0, 0, 0.1); color: #ff5252; border: 1px solid #ff5252; }
@@ -116,7 +116,7 @@
 
 <script>
 function switchTab(tab) {
-  document.getElementById('messageBox').style.display = 'none'; // Sekme değişince mesajı temizle
+  document.getElementById('messageBox').style.display = 'none'; 
   if (tab === 'login') {
     document.getElementById('form-login').style.display = 'block';
     document.getElementById('form-register').style.display = 'none';
@@ -133,11 +133,11 @@ function switchTab(tab) {
 function mesajGoster(mesaj, tip) {
     const box = document.getElementById('messageBox');
     box.textContent = mesaj;
-    box.className = tip; // 'success' veya 'error'
+    box.className = tip; 
     box.style.display = 'block';
 }
 
-// ARKA PLANA (VERİTABANINA) KAYIT GÖNDERME
+
 async function gercekKayit(e) {
     e.preventDefault();
     const ad = document.getElementById('regAd').value;
@@ -153,14 +153,13 @@ async function gercekKayit(e) {
     const sonuc = await cevap.json();
     if(cevap.ok) {
         mesajGoster(sonuc.mesaj, 'success');
-        document.getElementById('form-register').reset(); // Formu temizle
-        setTimeout(() => switchTab('login'), 2000); // 2 saniye sonra giriş sayfasına at
+        document.getElementById('form-register').reset(); 
+        setTimeout(() => switchTab('login'), 2000); 
     } else {
         mesajGoster(sonuc.hata, 'error');
     }
 }
 
-// ARKA PLANDA (VERİTABANINDA) GİRİŞ KONTROLÜ
 async function gercekGiris(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
@@ -175,10 +174,8 @@ async function gercekGiris(e) {
     const sonuc = await cevap.json();
     if(cevap.ok) {
         mesajGoster(sonuc.mesaj, 'success');
-        // KULLANICIYI HAFIZAYA KAYDET
         localStorage.setItem('kullanici_ad', sonuc.ad_soyad);
         localStorage.setItem('kullanici_id', sonuc.id);
-        // Profil sayfasına yönlendir
         setTimeout(() => { window.location.href = '/profil'; }, 1000); 
     } else {
         mesajGoster(sonuc.hata, 'error');

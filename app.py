@@ -69,7 +69,7 @@ def urunleri_getir():
         
         cur = conn.cursor()
         
-        # DİKKAT: Artık resim_url sütununu da veritabanından çekiyoruz!
+
         cur.execute("SELECT urun_id, urun_adi, stok, fiyat, kategori_id, resim_url FROM urun")
         db_urunler = cur.fetchall()
         
@@ -84,7 +84,7 @@ def urunleri_getir():
                 "stok": row[2],
                 "fiyat": float(row[3]),
                 "kategori_id": row[4],
-                # 5. sıradaki veri (row[5]) artık senin veritabanına gireceğin fotoğraf yolları olacak
+
                 "resim_url": row[5] if row[5] else "/static/images/varsayilan.png" 
             })
 
@@ -99,14 +99,13 @@ def satis_yap():
     data = request.get_json()
     gelen_urun_id = data.get('urun_id')
     gelen_adet = data.get('adet')
-    musteri_id = data.get('musteri_id') # Tarayıcıdan gelen müşteri numarası
-
+    musteri_id = data.get('musteri_id') 
     try:
         conn = get_db_connection()
         cur = conn.cursor()
         bugun = date.today()
         
-        # Müşteri giriş yapmışsa siparişi ona bağla, yapmamışsa NULL (ziyaretçi) bırak
+     
         if musteri_id:
             cur.execute("INSERT INTO satis (tarih, musteri_id) VALUES (%s, %s) RETURNING satis_id;", (bugun, musteri_id))
         else:
@@ -132,7 +131,7 @@ def kayit_ol():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        # Veritabanına yeni müşteriyi ekliyoruz
+    
         cur.execute(
             "INSERT INTO musteri (ad_soyad, email, sifre) VALUES (%s, %s, %s)",
             (ad_soyad, email, sifre)
@@ -142,7 +141,7 @@ def kayit_ol():
         conn.close()
         return jsonify({"mesaj": "Kayıt işlemi başarıyla tamamlandı!"}), 201
     except Exception as e:
-        # Eğer aynı email varsa UNIQUE kuralı hata fırlatır, biz de yakalarız
+     
         return jsonify({"hata": "Bu e-posta adresi zaten kullanılıyor!"}), 400
 
 # GİRİŞ YAP API ---
@@ -154,19 +153,19 @@ def giris_yap():
 
     conn = get_db_connection()
     cur = conn.cursor()
-    # Veritabanından ad_soyad ile birlikte ID numarasını da çekiyoruz
+
     cur.execute("SELECT id, ad_soyad FROM musteri WHERE email = %s AND sifre = %s", (email, sifre))
     user = cur.fetchone()
     cur.close()
     conn.close()
 
     if user:
-        # user[0] = id, user[1] = ad_soyad
+
         return jsonify({"mesaj": "Giriş başarılı! Hoş geldin, " + user[1], "ad_soyad": user[1], "id": user[0]}), 200
     else:
         return jsonify({"hata": "E-posta veya şifre hatalı!"}), 401
     
-   # PROFİL SAYFASI VE GEÇMİŞ SİPARİŞLER API ---
+   # PROFİL SAYFASI VE GEÇMİŞ SİPARİŞLER API 
 @app.route('/profil')
 def profil_sayfasi():
     return render_template('profil.html')
@@ -179,7 +178,7 @@ def siparislerim():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        # SQL ile tabloları birleştirip müşterinin geçmiş siparişlerini buluyoruz
+
         sorgu = """
             SELECT s.tarih, u.urun_adi, sd.adet, (u.fiyat * sd.adet) as toplam
             FROM satis s
@@ -197,7 +196,7 @@ def siparislerim():
         return jsonify(liste), 200
     except Exception as e:
         return jsonify({"hata": str(e)}), 500
-    # --- İLETİŞİM MESAJI KAYDETME API ---
+    #  İLETİŞİM MESAJI KAYDETME API
 @app.route('/mesaj-gonder', methods=['POST'])
 def mesaj_gonder():
     data = request.get_json()
@@ -212,7 +211,7 @@ def mesaj_gonder():
         conn = get_db_connection()
         cur = conn.cursor()
         
-        # Mesajı veritabanına ekliyoruz
+
         cur.execute(
             "INSERT INTO iletisim_mesajlari (ad_soyad, email, mesaj) VALUES (%s, %s, %s)",
             (ad_soyad, email, mesaj)
@@ -225,7 +224,7 @@ def mesaj_gonder():
         
     except Exception as e:
         return jsonify({"hata": f"Veritabanı Hatası: {str(e)}"}), 500
-    # --- ADMİN: YENİ ÜRÜN EKLEME API ---
+    # YENİ ÜRÜN EKLEME API 
 @app.route('/admin/urun-ekle', methods=['POST'])
 def admin_urun_ekle():
     data = request.get_json()
@@ -233,7 +232,7 @@ def admin_urun_ekle():
     fiyat = data.get('fiyat')
     stok = data.get('stok')
     kategori_id = data.get('kategori_id')
-    resim_url = data.get('resim_url', '/static/images/varsayilan.png') # Boş bırakılırsa varsayılan resim atar
+    resim_url = data.get('resim_url', '/static/images/varsayilan.png') 
 
     if not ad or not fiyat or not stok or not kategori_id:
         return jsonify({"hata": "Lütfen gerekli tüm alanları doldurun!"}), 400

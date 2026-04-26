@@ -19,7 +19,7 @@
   * { box-sizing: border-box; }
   body { margin: 0; font-family: "Inter", system-ui, -apple-system, sans-serif; background: var(--bg-gray); color: var(--text-dark); -webkit-font-smoothing: antialiased; }
 
-  /* --- ÜST BİLGİ BARI --- */
+
   .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: var(--card-bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40; }
   .logo { display: flex; align-items: center; cursor: pointer; font-size: 32px; font-weight: 900; font-style: italic; letter-spacing: -1px; transition: 0.2s; }
   .logo:hover { transform: scale(1.05); }
@@ -33,7 +33,7 @@
   .cart-btn { background: var(--brand-orange); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 15px; transition: 0.2s;}
   .cart-btn:hover { background: #e66e00; transform: translateY(-2px); }
 
-  /* --- SAYFA DÜZENİ --- */
+
   .wrap { display: flex; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
   aside.sidebar { width: 240px; background: var(--card-bg); border-radius: var(--radius); padding: 15px; border: 1px solid var(--border); height: fit-content; }
   .category-title { font-weight: 700; margin-bottom: 15px; color: var(--brand-cyan); font-size: 18px; }
@@ -47,7 +47,7 @@
   .results { color: var(--text-muted); }
   #sortSelect { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-dark); outline: none; }
 
-  /* KARTLAR */
+
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
   .card { background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; transition: 0.2s; position: relative; }
   .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-sm); border-color: var(--brand-cyan); }
@@ -63,7 +63,7 @@
   .add-btn:hover { background: #00b8c4; }
   .add-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
 
-  /* SEPET PENCERESİ */
+
   #cartOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: 0.3s; z-index: 99; backdrop-filter: blur(2px); }
   #cart { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: var(--card-bg); box-shadow: -5px 0 20px rgba(0,0,0,0.5); transition: right 0.3s; z-index: 100; display: flex; flex-direction: column; border-left: 1px solid var(--border); }
   .cart-header { background: var(--brand-orange); color: white; padding: 15px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; }
@@ -75,7 +75,7 @@
   .cart-footer button { width: 100%; padding: 15px; background: var(--brand-orange); color: white; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; transition: 0.2s;}
   .cart-footer button:hover { background: #e66e00; }
 
-  /* YENİ: ÖDEME MODALI (KART BİLGİLERİ EKRANI) */
+
   #paymentModal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center;
@@ -206,7 +206,7 @@ let query = "";
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let genelToplam = 0; 
 
-// Veritabanından gelen 1, 2, 3 numaralarını gerçek isimlere çeviren sözlüğümüz
+
 const katIsimleri = { 1: 'Gıda', 2: 'İçecek', 3: 'Temizlik', 4: 'Atıştırmalık' };
 
 async function veritabanindanUrunleriCek() {
@@ -220,37 +220,33 @@ async function veritabanindanUrunleriCek() {
             products.push({
                 id: dbUrun.urun_id,
                 
-                // HTML'in aradığı 'title' kelimesini veritabanındaki urun_adi'na bağladık
+
                 title: dbUrun.urun_adi,
                 
-                // HTML'in aradığı fiyat ve stok
+
                 price: dbUrun.fiyat,
                 stok: dbUrun.stok,
                 
-                // Kategori numaralarını (1, 2) yazılara (Gıda, İçecek) çeviriyoruz
                 category: katIsimleri[dbUrun.kategori_id] || "Diğer",
                 
-                // Resim bağlantısı
                 image: dbUrun.resim_url || '/static/images/varsayilan.png',
                 
-                // Ekranda "undefined" yazmaması için varsayılan bir adet/gramaj değeri
                 weight: "1 Adet"
             });
         });
 
-        // Sol menüdeki kategorileri (Gıda, İçecek vs.) ürünlerden çekip dinamik olarak oluşturuyoruz
         const benzersizKategoriler = [...new Set(products.map(p => p.category))];
         categories = ["Tümü", ...benzersizKategoriler];
 
-        renderCategories(); // Sol menüyü çiz
-        renderProducts();   // Ürün vitrinini çiz
+        renderCategories(); 
+        renderProducts();   
         
     } catch (hata) {
         console.error("Veritabanından ürünler çekilemedi:", hata);
     }
 }
 
-// Ödeme Ekranı Fonksiyonları
+
 function odemeEkraniniAc() {
     if(cart.length === 0) { alert("Sepetiniz boş!"); return; }
     toggleCart(); 

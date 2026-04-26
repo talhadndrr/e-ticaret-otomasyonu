@@ -120,7 +120,7 @@
 <script>
 
 
-// Ana sayfada veritabanından veri çekme
+
 function vitrinDoldur() {
     fetch('/urunler')
         .then(cevap => cevap.json())
@@ -128,18 +128,18 @@ function vitrinDoldur() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = "";
             
-            // Vitrin olduğu için sadece ilk 8 ürünü gösterelim
+
             const vitrinUrunleri = dbUrunler.slice(0, 8);
             
             vitrinUrunleri.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => window.location.href = '/products.html'; // Tıklayınca asıl mağazaya gider
+                card.onclick = () => window.location.href = '/products.html'; 
 
                 const imgwrap = document.createElement('div');
                 imgwrap.className = 'imgwrap';
                 
-                // İŞTE DÜZELTTİĞİMİZ KISIM BURASI (p.image yerine p.resim_url ve undefined önlemi)
+
                 const gorsel = p.resim_url || '/static/images/varsayilan.png';
                 const isim = p.urun_adi || 'Ürün';
                 
@@ -151,7 +151,7 @@ function vitrinDoldur() {
 
                 const price = document.createElement('div');
                 price.className = 'price';
-                // Fiyatı formatlarken undefined hatası vermemesi için güvenlik önlemi
+
                 const fiyatDegeri = p.fiyat || 0;
                 price.textContent = fiyatDegeri.toLocaleString('tr-TR', {minimumFractionDigits:2}) + '₺';
 
@@ -169,7 +169,6 @@ window.onload = vitrinDoldur;
 function gitArama() {
   const kelime = document.getElementById('homeSearch').value;
   if(kelime.trim() !== "") {
-    // Arama kelimesini URL'nin sonuna ekleyip ürünler sayfasına yönlendiriyor
     window.location.href = '/products.html?arama=' + encodeURIComponent(kelime);
   } else {
     window.location.href = '/products.html';

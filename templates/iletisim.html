@@ -31,7 +31,7 @@
   .form-section { flex: 1; display: flex; flex-direction: column; gap: 15px; background: var(--bg-gray); padding: 25px; border-radius: 8px; border: 1px solid var(--border); }
   .form-section h3 { margin-top: 0; color: #fff; }
   
-  /* Bildirim mesajı kutusu */
+
   #mesajKutusu { display: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; text-align: center; }
   .basarili { background: rgba(0, 255, 0, 0.1); color: #4caf50; border: 1px solid #4caf50; }
   .hatali { background: rgba(255, 0, 0, 0.1); color: #ff5252; border: 1px solid #ff5252; }
@@ -99,13 +99,13 @@
 
 <script>
 async function gercekMesajGonder() {
-    // Kutuların içindeki yazıları alıyoruz
+
     const ad = document.getElementById('gonderenAd').value;
     const email = document.getElementById('gonderenEmail').value;
     const mesaj = document.getElementById('gonderenMesaj').value;
     const kutu = document.getElementById('mesajKutusu');
 
-    // Boş alan kontrolü
+
     if(ad.trim() === "" || email.trim() === "" || mesaj.trim() === "") {
         kutu.textContent = "Lütfen tüm alanları doldurunuz!";
         kutu.className = "hatali";
@@ -114,7 +114,7 @@ async function gercekMesajGonder() {
     }
 
     try {
-        // Python'a verileri fırlatıyoruz
+
         const cevap = await fetch('/mesaj-gonder', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -124,7 +124,7 @@ async function gercekMesajGonder() {
         const sonuc = await cevap.json();
 
         if(cevap.ok) {
-            // Başarılıysa formu temizle ve yeşil mesaj ver
+
             kutu.textContent = sonuc.mesaj;
             kutu.className = "basarili";
             kutu.style.display = "block";
@@ -133,7 +133,7 @@ async function gercekMesajGonder() {
             document.getElementById('gonderenEmail').value = "";
             document.getElementById('gonderenMesaj').value = "";
             
-            // 3 saniye sonra yeşil mesajı da gizle
+
             setTimeout(() => { kutu.style.display = "none"; }, 3000);
         } else {
             kutu.textContent = sonuc.hata;
@@ -145,7 +145,6 @@ async function gercekMesajGonder() {
     }
 }
 
-// Menüye Giriş Yapanın Adını Ekleme (Daha önceki adımdan kalma ince detay)
 document.addEventListener("DOMContentLoaded", () => {
     const ad = localStorage.getItem('kullanici_ad');
     if(ad) {
